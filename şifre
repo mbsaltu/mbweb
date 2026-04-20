@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Casus Şifre: Sezar Operasyonu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Outfit:wght@400;600;800&display=swap');
+        
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: #0f172a;
+            color: #f1f5f9;
+            min-height: 100vh;
+        }
+
+        .code-font { font-family: 'JetBrains Mono', monospace; }
+
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .heart {
+            color: #ef4444;
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .heart.lost {
+            filter: grayscale(1);
+            opacity: 0.2;
+            transform: scale(0.8);
+        }
+
+        .cipher-letter {
+            width: 45px;
+            height: 60px;
+            background: #1e293b;
+            border: 2px solid #38bdf8;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #38bdf8;
+            box-shadow: 0 4px 15px rgba(56, 189, 248, 0.2);
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-8px); }
+            40% { transform: translateX(8px); }
+            60% { transform: translateX(-8px); }
+            80% { transform: translateX(8px); }
+        }
+
+        .shake { animation: shake 0.4s ease-in-out; }
+
+        .wheel-table td {
+            border: 1px solid #334155;
+            padding: 4px;
+            text-align: center;
+            font-size: 0.75rem;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8 flex items-center justify-center">
+
+    <div class="max-w-6xl w-full grid grid-cols-1 lg:grid-cols-4 gap-6">
+        
+        <!-- SOL PANEL: KURALLAR VE EĞİTİM -->
+        <div class="lg:col-span-1 space-y-4">
+            <div class="glass-panel p-6 rounded-3xl border-l-4 border-l-sky-500">
+                <h2 class="text-xl font-bold text-sky-400 mb-4 flex items-center gap-2">
+                    <span>🛡️</span> Şifreleme Kuralı
+                </h2>
+                <div class="text-sm space-y-3 text-slate-300">
+                    <p>Bu görevde <span class="text-white font-bold">Sezar Şifrelemesi</span> kullanılmaktadır.</p>
+                    <div class="bg-black/30 p-3 rounded-lg code-font text-emerald-400 text-xs">
+                        Kural: Her harf alfabede kendisinden 3 adım sonraki harf ile değiştirilir.
+                    </div>
+                    <p class="italic text-slate-500">Örnek: A harfi 3 adım sonra D olur. B harfi E olur.</p>
+                </div>
+            </div>
+
+            <div class="glass-panel p-6 rounded-3xl">
+                <h2 class="text-xl font-bold text-amber-400 mb-4 flex items-center gap-2">
+                    <span>🎮</span> Nasıl Oynanır?
+                </h2>
+                <ul class="text-sm space-y-2 text-slate-400">
+                    <li>1. Şifreli kelimeyi incele.</li>
+                    <li>2. Her harfi 3 adım geri götürerek orijinali bul.</li>
+                    <li>3. Tahminini yaz ve kontrol et.</li>
+                    <li>4. 3 yanlış hakkın dolmadan görevi bitir.</li>
+                </ul>
+            </div>
+
+            <!-- KÜÇÜK ÇARK ÖRNEĞİ -->
+            <div class="glass-panel p-4 rounded-3xl overflow-hidden">
+                <h3 class="text-xs font-bold text-slate-500 uppercase mb-2">Hızlı Dönüşüm Rehberi</h3>
+                <table class="w-full wheel-table text-slate-400 code-font">
+                    <tr class="bg-slate-800"><td>A</td><td>B</td><td>C</td><td>Ç</td><td>D</td></tr>
+                    <tr class="text-sky-400"><td>Ç</td><td>D</td><td>E</td><td>F</td><td>G</td></tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- ORTA PANEL: ANA OYUN -->
+        <div class="lg:col-span-2 space-y-6">
+            <div class="glass-panel p-8 rounded-[2.5rem] shadow-2xl relative">
+                <div class="flex justify-between items-center mb-10">
+                    <div id="heartContainer" class="flex gap-2">
+                        <span class="heart">❤️</span>
+                        <span class="heart">❤️</span>
+                        <span class="heart">❤️</span>
+                    </div>
+                    <div id="levelDisplay" class="bg-sky-500/20 text-sky-400 px-4 py-1 rounded-full text-xs font-black uppercase tracking-widest">
+                        GÖREV 01
+                    </div>
+                </div>
+
+                <div class="text-center space-y-8">
+                    <h1 class="text-4xl font-black text-white tracking-tight">ŞİFREYİ ÇÖZ</h1>
+                    
+                    <!-- Şifreli Kelime Kutuları -->
+                    <div class="flex flex-wrap justify-center gap-2" id="cipherDisplay">
+                        <!-- JS ile dolar -->
+                    </div>
+
+                    <div class="max-w-sm mx-auto space-y-4 pt-4">
+                        <div id="inputWrapper">
+                            <input type="text" id="userInput" maxlength="20" class="w-full bg-slate-900 border-2 border-slate-700 rounded-2xl p-5 text-2xl text-center uppercase code-font text-white focus:border-sky-500 outline-none transition-all shadow-inner" placeholder="DEŞİFRE ET...">
+                        </div>
+                        
+                        <div class="flex gap-3">
+                            <button id="submitBtn" class="flex-1 bg-sky-600 hover:bg-sky-500 text-white font-bold py-4 rounded-2xl shadow-lg transition-all active:scale-95">KONTROL ET</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="statusMsg" class="text-center font-bold text-lg min-h-[2rem]"></div>
+        </div>
+
+        <!-- SAĞ PANEL: İPUÇLARI VE KONTROLLER -->
+        <div class="lg:col-span-1 space-y-4">
+            <div class="glass-panel p-6 rounded-3xl border-b-4 border-b-amber-500">
+                <h2 class="text-lg font-bold text-white mb-4">Yardımcı Araçlar</h2>
+                <button id="hintBtn" class="w-full bg-slate-800 hover:bg-slate-700 text-amber-400 py-3 rounded-xl text-sm font-bold mb-3 border border-amber-500/30 transition-colors">
+                    İPUCU AL (-1 CAN)
+                </button>
+                <button id="revealBtn" class="w-full bg-red-900/20 hover:bg-red-900/40 text-red-400 py-3 rounded-xl text-sm font-bold border border-red-500/30 transition-colors">
+                    CEVABI GÖSTER
+                </button>
+            </div>
+
+            <div class="p-4 text-center">
+                <p class="text-[10px] text-slate-600 uppercase tracking-widest">Casus Yazılım v2.0 - Sezar Protokolü</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODALLAR -->
+    <div id="modal" class="fixed inset-0 bg-slate-950/90 hidden items-center justify-center z-50 p-6 backdrop-blur-sm">
+        <div class="glass-panel p-10 rounded-[3rem] border-2 border-sky-500 max-w-sm w-full text-center space-y-6">
+            <div id="modalIcon" class="text-7xl">🎯</div>
+            <h2 id="modalTitle" class="text-3xl font-black text-white uppercase">BAŞARILI!</h2>
+            <p id="modalBody" class="text-slate-400">Şifre kırıldı. Bir sonraki aşamaya geçebilirsin.</p>
+            <button id="modalAction" class="w-full bg-sky-600 hover:bg-sky-500 py-4 rounded-2xl font-bold text-lg">DEVAM ET</button>
+        </div>
+    </div>
+
+    <script>
+        // Türk Alfabesi (29 harf)
+        const alphabet = "ABCÇDEFGĞHIİJKLMNOÖPRSŞTUÜVYZ";
+        const shift = 3;
+
+        const missions = [
+            { cipher: "PHUKDED", original: "MERHABA" },
+            { cipher: "ÇDVXV", original: "CASUS" },
+            { cipher: "JİÇNİ", original: "GİZLİ" },
+            { cipher: "ÜİIÜH", original: "ŞİFRE" },
+            { cipher: "GZÖBC", original: "DÜNYA" },
+            { cipher: "NBUFNBUJL", original: "MATEMATİK" }
+        ];
+
+        let currentIdx = 0;
+        let lives = 3;
+        let isGameOver = false;
+
+        // Elementler
+        const cipherDisplay = document.getElementById('cipherDisplay');
+        const userInput = document.getElementById('userInput');
+        const submitBtn = document.getElementById('submitBtn');
+        const statusMsg = document.getElementById('statusMsg');
+        const heartContainer = document.getElementById('heartContainer');
+        const levelDisplay = document.getElementById('levelDisplay');
+        const modal = document.getElementById('modal');
+        const modalAction = document.getElementById('modalAction');
+        const revealBtn = document.getElementById('revealBtn');
+        const hintBtn = document.getElementById('hintBtn');
+
+        function initLevel() {
+            if (currentIdx >= missions.length) {
+                showModal("🏆 TEBRİKLER!", "Tüm görevleri tamamladın ve usta bir kriptograf oldun!", "TEKRAR BAŞLA", "⭐");
+                currentIdx = 0;
+                return;
+            }
+
+            const mission = missions[currentIdx];
+            levelDisplay.innerText = `GÖREV ${String(currentIdx + 1).padStart(2, '0')}`;
+            userInput.value = "";
+            userInput.disabled = false;
+            statusMsg.innerText = "";
+            isGameOver = false;
+
+            cipherDisplay.innerHTML = "";
+            mission.cipher.split('').forEach(char => {
+                const div = document.createElement('div');
+                div.className = "cipher-letter";
+                div.innerText = char;
+                cipherDisplay.appendChild(div);
+            });
+            userInput.focus();
+        }
+
+        function handleCheck() {
+            if (isGameOver) return;
+
+            const guess = userInput.value.trim().toUpperCase();
+            const correct = missions[currentIdx].original;
+
+            if (guess === correct) {
+                showModal("🎯 BAŞARILI!", `"${correct}" kelimesini deşifre ettin.`, "SIRADAKİ GÖREV", "🎯");
+            } else {
+                lives--;
+                updateHearts();
+                triggerShake();
+                
+                if (lives <= 0) {
+                    isGameOver = true;
+                    showModal("💀 ELENDİN!", `Tüm hakların bitti. Kelime: ${correct}`, "YENİDEN DENE", "💀");
+                } else {
+                    statusMsg.innerText = "❌ Yanlış cevap! Alfabede 3 harf geri gitmeyi dene.";
+                    statusMsg.className = "text-center font-bold text-lg text-red-500";
+                }
+            }
+        }
+
+        function updateHearts() {
+            const hearts = heartContainer.querySelectorAll('.heart');
+            hearts.forEach((h, i) => {
+                if (i >= lives) h.classList.add('lost');
+                else h.classList.remove('lost');
+            });
+        }
+
+        function triggerShake() {
+            const wrapper = document.getElementById('inputWrapper');
+            wrapper.classList.add('shake');
+            setTimeout(() => wrapper.classList.remove('shake'), 400);
+        }
+
+        function showModal(title, body, btnText, icon) {
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('modalBody').innerText = body;
+            document.getElementById('modalAction').innerText = btnText;
+            document.getElementById('modalIcon').innerText = icon;
+            modal.style.display = 'flex';
+        }
+
+        modalAction.addEventListener('click', () => {
+            modal.style.display = 'none';
+            if (lives <= 0) {
+                lives = 3;
+                currentIdx = 0;
+                updateHearts();
+            } else {
+                currentIdx++;
+            }
+            initLevel();
+        });
+
+        revealBtn.addEventListener('click', () => {
+            isGameOver = true;
+            const correct = missions[currentIdx].original;
+            showModal("BİLGİ SIZINTISI", `Cevap: ${correct}`, "ANLADIM", "🔓");
+        });
+
+        hintBtn.addEventListener('click', () => {
+            if (lives > 1) {
+                lives--;
+                updateHearts();
+                const correct = missions[currentIdx].original;
+                statusMsg.innerText = `İpucu: Kelime "${correct[0]}" harfi ile başlıyor.`;
+                statusMsg.className = "text-center font-bold text-lg text-amber-500";
+            } else {
+                statusMsg.innerText = "⚠️ İpucu için yeterli canın yok!";
+            }
+        });
+
+        submitBtn.addEventListener('click', handleCheck);
+        userInput.addEventListener('keypress', (e) => { if(e.key === 'Enter') handleCheck(); });
+
+        initLevel();
+    </script>
+</body>
+</html>
