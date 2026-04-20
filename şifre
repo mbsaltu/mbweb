@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Casus Şifre: Sezar Operasyonu</title>
+    <!-- Tailwind CSS Play CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Outfit:wght@400;600;800&display=swap');
@@ -13,6 +14,8 @@
             background-color: #020617;
             color: #f1f5f9;
             min-height: 100vh;
+            margin: 0;
+            overflow-x: hidden;
         }
 
         .code-font { font-family: 'JetBrains Mono', monospace; }
@@ -192,18 +195,17 @@
     </div>
 
     <script>
-        // Türk Alfabesi (29 harf)
+        // Türk Alfabesi (29 harf) - İndeksler: 0:A, 1:B, 2:C, 3:Ç, 4:D, 5:E...
         const alphabet = "ABCÇDEFGĞHIİJKLMNOÖPRSŞTUÜVYZ";
         const SHIFT_VAL = 3;
 
-        // Sezar Şifreli Görevler
+        // Sezar Şifreli Görevler (Türkçe alfabesine göre yeniden hesaplandı)
         const missions = [
-            { cipher: "PHUKDED", original: "MERHABA" },
-            { cipher: "ÇDVXV", original: "CASUS" },
-            { cipher: "JİÇNİ", original: "GİZLİ" },
-            { cipher: "ÜİIÜH", original: "ŞİFRE" },
-            { cipher: "NBUFNBUJL", original: "MATEMATİK" },
-            { cipher: "ÇÖNÇÖL", original: "BÜLBÜL" }
+            { cipher: "ÖĞTJÇDÇ", original: "MERHABA" }, // M(15)+3=Ö(18), E(5)+3=Ğ(8)...
+            { cipher: "EÇUYU", original: "CASUS" },    // C(2)+3=E(5), A(0)+3=Ç(3)...
+            { cipher: "ILCOL", original: "GİZLİ" },    // G(7)+3=I(10), İ(11)+3=L(14)...
+            { cipher: "ÜLHTĞ", original: "ŞİFRE" },    // Ş(22)+3=Ü(25), İ(11)+3=L(14)...
+            { cipher: "ÖÇVĞÖÇVLN", original: "MATEMATİK" }
         ];
 
         let currentIdx = 0;
