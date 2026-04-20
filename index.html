@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Casus Şifre: Sezar Operasyonu</title>
+    <title>Matematik Projesi: İnteraktif Uygulama</title>
     <!-- Tailwind CSS Play CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -124,14 +124,14 @@
                         <span class="heart">❤️</span>
                     </div>
                     <div id="levelDisplay" class="bg-sky-500 text-white px-5 py-1.5 rounded-full text-xs font-black uppercase tracking-widest shadow-lg shadow-sky-500/20">
-                        GÖREV: 01
+                        AŞAMA: 01
                     </div>
                 </div>
 
                 <div class="text-center space-y-10">
                     <div>
-                        <h1 class="text-5xl font-black text-white tracking-tighter mb-2">CASUS ŞİFRE</h1>
-                        <p class="text-slate-500 font-medium uppercase tracking-[0.3em] text-[10px]">Veri Deşifre Protokolü</p>
+                        <h1 class="text-5xl font-black text-white tracking-tighter mb-2">MATEMATİK PROJESİ</h1>
+                        <p class="text-slate-500 font-medium uppercase tracking-[0.3em] text-[10px]">İnteraktif Uygulama Deneyimi</p>
                     </div>
                     
                     <!-- Şifreli Harfler -->
@@ -141,7 +141,7 @@
 
                     <div class="max-w-md mx-auto space-y-6 pt-6">
                         <div id="inputWrapper" class="relative">
-                            <input type="text" id="userInput" maxlength="20" class="w-full bg-slate-950 border-2 border-slate-800 rounded-3xl p-6 text-3xl text-center uppercase code-font text-sky-400 focus:border-sky-500 outline-none transition-all shadow-inner placeholder:text-slate-800" placeholder="KODU GİR">
+                            <input type="text" id="userInput" maxlength="20" class="w-full bg-slate-950 border-2 border-slate-800 rounded-3xl p-6 text-3xl text-center uppercase code-font text-sky-400 focus:border-sky-500 outline-none transition-all shadow-inner placeholder:text-slate-800" placeholder="CEVABI GİR">
                         </div>
                         
                         <button id="submitBtn" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-black py-5 rounded-3xl shadow-xl shadow-emerald-900/20 transition-all active:scale-95 text-xl tracking-widest uppercase">Kontrol Et</button>
@@ -156,7 +156,7 @@
         <div class="lg:col-span-1 space-y-4">
             <div class="glass-panel p-6 rounded-3xl border-b-4 border-b-sky-500">
                 <h2 class="text-lg font-bold text-white mb-6 flex items-center gap-2">
-                    <span>🛠️</span> Operasyon Araçları
+                    <span>🛠️</span> Uygulama Araçları
                 </h2>
                 
                 <div class="space-y-3">
@@ -171,13 +171,13 @@
                 
                 <div class="mt-8 pt-6 border-t border-slate-800">
                     <p class="text-[10px] text-slate-500 leading-relaxed text-center">
-                        <strong>NOT:</strong> 3 yanlış hakkın dolarsa sistem güvenliği için orijinal kelime ifşa edilir.
+                        <strong>NOT:</strong> 3 yanlış hakkın dolarsa eğitim amaçlı olarak orijinal kelime ifşa edilir.
                     </p>
                 </div>
             </div>
 
             <div class="p-6 text-center">
-                <p class="text-[10px] text-slate-700 font-bold uppercase tracking-[0.4em]">Sezar V3.0 / Secure</p>
+                <p class="text-[10px] text-slate-700 font-bold uppercase tracking-[0.4em]">Matematik Projesi v3.0</p>
             </div>
         </div>
     </div>
@@ -236,7 +236,7 @@
          */
         function initLevel() {
             if (currentIdx >= missions.length) {
-                showModal("🏆 EFSANE!", "Tüm kriptografik engelleri aştın!", "TEKRAR BAŞLA", "👑");
+                showModal("🏆 EFSANE!", "Tüm aşamaları başarıyla tamamladın!", "TEKRAR BAŞLA", "👑");
                 currentIdx = 0;
                 lives = 3;
                 updateHearts();
@@ -244,7 +244,7 @@
             }
 
             const mission = missions[currentIdx];
-            levelDisplay.innerText = `GÖREV: ${String(currentIdx + 1).padStart(2, '0')}`;
+            levelDisplay.innerText = `AŞAMA: ${String(currentIdx + 1).padStart(2, '0')}`;
             userInput.value = "";
             userInput.disabled = false;
             statusMsg.innerText = "";
@@ -270,7 +270,7 @@
             const correct = missions[currentIdx].original;
 
             if (guess === correct) {
-                showModal("🎯 BAŞARILI!", `"${correct}" verisi deşifre edildi.`, "SIRADAKİ GÖREV", "🎯");
+                showModal("🎯 BAŞARILI!", `"${correct}" kelimesi başarıyla deşifre edildi.`, "SIRADAKİ AŞAMA", "🎯");
             } else {
                 lives--;
                 updateHearts();
@@ -278,9 +278,9 @@
                 
                 if (lives <= 0) {
                     isLevelActive = false;
-                    showModal("💀 ELENDİN!", `Tüm hakların bitti. Kelime: ${correct}`, "SİSTEMİ SIFIRLA", "💀");
+                    showModal("💀 HAKLARIN BİTTİ!", `Kelimenin orijinal hali: ${correct}`, "BAŞTAN DENE", "💀");
                 } else {
-                    statusMsg.innerText = `❌ Yanlış Kod! 3 harf geri gitmeyi dene. (${lives} Hak)`;
+                    statusMsg.innerText = `❌ Yanlış Cevap! 3 harf geri gitmeyi dene. (${lives} Hak)`;
                     statusMsg.className = "text-center font-bold text-lg text-red-500 animate-pulse";
                 }
             }
@@ -334,7 +334,7 @@
             if (!isLevelActive) return;
             isLevelActive = false;
             const correct = missions[currentIdx].original;
-            showModal("VERİ İFŞASI", `Tespit Edilen Kelime: ${correct}`, "ANLADIM", "🔓");
+            showModal("CEVAP ANAHTARI", `Aranan Kelime: ${correct}`, "ANLADIM", "🔓");
         });
 
         hintBtn.addEventListener('click', () => {
@@ -345,7 +345,7 @@
                 statusMsg.innerText = `İPUCU: Kelime "${correct[0]}" harfi ile başlıyor.`;
                 statusMsg.className = "text-center font-bold text-lg text-amber-500";
             } else {
-                statusMsg.innerText = "⚠️ KRİTİK: İpucu için yeterli canın yok!";
+                statusMsg.innerText = "⚠️ DİKKAT: İpucu için yeterli hakkın yok!";
                 statusMsg.className = "text-center font-bold text-lg text-red-400";
             }
         });
