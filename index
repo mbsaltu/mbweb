@@ -195,16 +195,21 @@
     </div>
 
     <script>
-        // Türk Alfabesi (29 harf) - İndeksler: 0:A, 1:B, 2:C, 3:Ç, 4:D, 5:E...
+        // Türkçe karakterleri doğru işleyen Büyük Harf fonksiyonu
+        function trToUpper(text) {
+            return text.replace(/i/g, "İ").replace(/ı/g, "I").toUpperCase();
+        }
+
+        // Türk Alfabesi (29 harf)
         const alphabet = "ABCÇDEFGĞHIİJKLMNOÖPRSŞTUÜVYZ";
         const SHIFT_VAL = 3;
 
-        // Sezar Şifreli Görevler (Türkçe alfabesine göre yeniden hesaplandı)
+        // Sezar Şifreli Görevler
         const missions = [
-            { cipher: "ÖĞTJÇDÇ", original: "MERHABA" }, // M(15)+3=Ö(18), E(5)+3=Ğ(8)...
-            { cipher: "EÇUYU", original: "CASUS" },    // C(2)+3=E(5), A(0)+3=Ç(3)...
-            { cipher: "ILCOL", original: "GİZLİ" },    // G(7)+3=I(10), İ(11)+3=L(14)...
-            { cipher: "ÜLHTĞ", original: "ŞİFRE" },    // Ş(22)+3=Ü(25), İ(11)+3=L(14)...
+            { cipher: "ÖĞTJÇDÇ", original: "MERHABA" },
+            { cipher: "EÇUYU", original: "CASUS" },
+            { cipher: "ILCOL", original: "GİZLİ" },
+            { cipher: "ÜLHTĞ", original: "ŞİFRE" },
             { cipher: "ÖÇVĞÖÇVLN", original: "MATEMATİK" }
         ];
 
@@ -253,7 +258,7 @@
         function handleCheck() {
             if (!isLevelActive) return;
 
-            const guess = userInput.value.trim().toUpperCase();
+            const guess = trToUpper(userInput.value.trim());
             const correct = missions[currentIdx].original;
 
             if (guess === correct) {
@@ -308,6 +313,7 @@
         });
 
         revealBtn.addEventListener('click', () => {
+            if (!isLevelActive) return;
             isLevelActive = false;
             const correct = missions[currentIdx].original;
             showModal("VERİ İFŞASI", `Tespit Edilen Kelime: ${correct}`, "ANLADIM", "🔓");
@@ -329,7 +335,6 @@
         submitBtn.addEventListener('click', handleCheck);
         userInput.addEventListener('keypress', (e) => { if(e.key === 'Enter') handleCheck(); });
 
-        // Oyunu Başlat
         initLevel();
     </script>
 </body>
